@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +14,16 @@ use App\Http\Controllers\Api\AuthController;
 |
 */
 
-Route::post('/login', [AuthController::class, 'createUser']);
-// Route::post('/auth/login', [AuthController::class, 'loginUser']);
+Route::group(['namespace'=>'Api'],function () {   
+    Route::post('/login', 'AuthController@createUser');
+
+    Route::group(['middleware' => ['auth:sanctum']], function(){
+        Route::any('/courseList','CourseController@courseList');
+        Route::any('/courseDetail','CourseController@courseDetail');
+        Route::any('/checkout','PayController@checkout');
+    });
+
+    Route::any('/web_go_hooks','PayController@web_go_hooks');
+
+    
+});
